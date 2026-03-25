@@ -1,4 +1,4 @@
-import { Download, Copy, Check } from 'lucide-react';
+import { Download, Copy, Check, Share2 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { useState, useCallback } from 'react';
 
@@ -15,31 +15,27 @@ function sanitizeColors(element: HTMLElement) {
   
   for (const el of elements) {
     const style = getComputedStyle(el);
-    
-    // Check each color property
     const colorProps = [
       'backgroundColor', 'color', 'borderColor', 
       'borderTopColor', 'borderRightColor', 'borderBottomColor', 'borderLeftColor',
-      'outlineColor', 'textDecorationColor', 'caretColor',
-      'boxShadow'
+      'outlineColor', 'textDecorationColor', 'caretColor', 'boxShadow'
     ] as const;
     
     for (const prop of colorProps) {
       const value = style[prop as keyof CSSStyleDeclaration] as string;
       if (value && typeof value === 'string' && unsupportedColorPattern.test(value)) {
-        if (prop === 'backgroundColor') {
-          el.style.backgroundColor = 'transparent';
-        } else if (prop === 'color') {
-          // Try to inherit, or fall back to a safe color
-          el.style.color = '#d4d4d4';
-        } else if (prop === 'boxShadow') {
-          el.style.boxShadow = 'none';
-        } else {
-          (el.style as unknown as Record<string, string>)[prop] = 'transparent';
-        }
+        if (prop === 'backgroundColor') el.style.backgroundColor = 'transparent';
+        else if (prop === 'color') el.style.color = '#d4d4d4';
+        else if (prop === 'boxShadow') el.style.boxShadow = 'none';
+        else (el.style as unknown as Record<string, string>)[prop] = 'transparent';
       }
     }
   }
+}
+
+// Check if we're on mobile (for share vs download)
+function isMobile() {
+  return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 }
 
 export function ExportOptions({ previewRef }: Props) {
@@ -48,35 +44,49 @@ export function ExportOptions({ previewRef }: Props) {
 
   const captureImage = useCallback(async () => {
     if (!previewRef.current) return null;
-    
-    const element = previewRef.current;
-    
-    return await html2canvas(element, {
+    return await html2canvas(previewRef.current, {
       backgroundColor: null,
       scale: 2,
       logging: false,
       useCORS: true,
-      // Capture the full content, not clipped
       scrollY: -window.scrollY,
       onclone: (_doc, clonedElement) => {
-        // Sanitize all unsupported color functions in the cloned DOM
         sanitizeColors(clonedElement);
       }
     });
   }, [previewRef]);
 
-  const downloadPNG = async () => {
+  const canvasToBlob = (canvas: HTMLCanvasElement): Promise<Blob | null> => {
+    return new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+  };
+
+  // On mobile: use Web Share API → iOS will show "Save Image" option → goes to Camera Roll
+  // On desktop: regular download
+  const downloadOrShare = async () => {
     setExporting(true);
     try {
       const canvas = await captureImage();
       if (!canvas) return;
-      const link = document.createElement('a');
-      link.download = `ai-response-${Date.now()}.png`;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
+
+      if (isMobile() && navigator.share) {
+        const blob = await canvasToBlob(canvas);
+        if (!blob) return;
+        const file = new File([blob], `ai-response-${Date.now()}.png`, { type: 'image/png' });
+        await navigator.share({
+          files: [file],
+          title: 'AI Response Screenshot',
+        });
+      } else {
+        const link = document.createElement('a');
+        link.download = `ai-response-${Date.now()}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      }
     } catch (err) {
-      console.error('Export failed:', err);
-      alert('Export failed — please try again');
+      // User cancelled share sheet — that's fine
+      if ((err as Error)?.name !== 'AbortError') {
+        console.error('Export failed:', err);
+      }
     } finally {
       setExporting(false);
     }
@@ -87,29 +97,27 @@ export function ExportOptions({ previewRef }: Props) {
     try {
       const canvas = await captureImage();
       if (!canvas) return;
-      canvas.toBlob(async (blob) => {
-        if (!blob) return;
-        try {
-          await navigator.clipboard.write([
-            new ClipboardItem({ 'image/png': blob })
-          ]);
-          setCopied(true);
-          setTimeout(() => setCopied(false), 2000);
-        } catch {
-          // Fallback to download
-          const link = document.createElement('a');
-          link.download = `ai-response-${Date.now()}.png`;
-          link.href = canvas.toDataURL('image/png');
-          link.click();
-        }
-      }, 'image/png');
+      const blob = await canvasToBlob(canvas);
+      if (!blob) return;
+      
+      try {
+        await navigator.clipboard.write([
+          new ClipboardItem({ 'image/png': blob })
+        ]);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch {
+        // Fallback: trigger share/download
+        await downloadOrShare();
+      }
     } catch (err) {
       console.error('Copy failed:', err);
-      alert('Copy failed — please try again');
     } finally {
       setExporting(false);
     }
   };
+
+  const mobile = isMobile();
 
   return (
     <div className="space-y-3">
@@ -123,16 +131,19 @@ export function ExportOptions({ previewRef }: Props) {
           {copied ? (
             <><Check className="w-4 h-4" /> Copied</>
           ) : (
-            <><Copy className="w-4 h-4" /> Copy to Clipboard</>
+            <><Copy className="w-4 h-4" /> Copy</>
           )}
         </button>
         <button
-          onClick={downloadPNG}
+          onClick={downloadOrShare}
           disabled={exporting}
-          className="flex items-center justify-center gap-2 px-4 py-2 text-sm border border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-300 rounded-md hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors disabled:opacity-50"
+          className="flex-1 flex items-center justify-center gap-2 px-4 py-2 text-sm border border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-300 rounded-md hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors disabled:opacity-50"
         >
-          <Download className="w-4 h-4" />
-          PNG
+          {mobile ? (
+            <><Share2 className="w-4 h-4" /> Save to Photos</>
+          ) : (
+            <><Download className="w-4 h-4" /> Download PNG</>
+          )}
         </button>
       </div>
     </div>
