@@ -23,7 +23,7 @@ function ChatGPTIcon({ className }: { className?: string }) {
   );
 }
 
-// Codex CLI — OpenAI logo, black + white
+// Codex CLI — SAME as ChatGPT (OpenAI product)
 function CodexIcon({ className }: { className?: string }) {
   return (
     <div className={`${className} rounded-full bg-black flex items-center justify-center`}>
@@ -34,16 +34,14 @@ function CodexIcon({ className }: { className?: string }) {
   );
 }
 
-// Claude Code — Anthropic sparkle on dark terminal-style background
+// Claude Code — SAME as Claude.ai (Anthropic product)
 function ClaudeCodeIcon({ className }: { className?: string }) {
   return (
-    <div className={`${className} rounded-lg bg-[#1a1b26] border border-[#292e42] flex items-center justify-center overflow-hidden relative`}>
-      <img 
-        src="/logos/claude.png" 
-        alt="Claude Code" 
-        className="w-[85%] h-[85%] rounded object-cover"
-      />
-    </div>
+    <img 
+      src="/logos/claude.png" 
+      alt="Claude Code" 
+      className={`${className} rounded-lg object-cover`}
+    />
   );
 }
 

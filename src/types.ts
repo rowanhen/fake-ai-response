@@ -40,14 +40,14 @@ export const SKINS: Skin[] = [
     name: 'Claude.ai',
     description: 'Anthropic web interface',
     supportsDarkMode: true,
-    models: ['Claude 4 Sonnet', 'Claude 4 Opus', 'Claude 3.5 Haiku'],
+    models: ['Sonnet 4.6', 'Opus 4', 'Haiku 3.5'],
   },
   {
     id: 'chatgpt',
     name: 'ChatGPT',
     description: 'OpenAI web interface',
     supportsDarkMode: true,
-    models: ['GPT-4o', 'GPT-4', 'GPT-3.5'],
+    models: ['GPT-4o', 'GPT-4', 'o3'],
   },
   {
     id: 'codex-cli',
@@ -61,6 +61,6 @@ export const SKINS: Skin[] = [
     name: 'Claude Code',
     description: 'Terminal TUI with ❯ prompt',
     supportsDarkMode: false,
-    models: ['Claude 4 Sonnet', 'Claude 4 Opus'],
+    models: ['Sonnet 4.6', 'Opus 4'],
   },
 ];

@@ -12,11 +12,26 @@ export function ExportOptions({ previewRef }: Props) {
 
   const captureImage = useCallback(async () => {
     if (!previewRef.current) return null;
-    return await html2canvas(previewRef.current, {
+    
+    const element = previewRef.current;
+    
+    // Capture only the visible portion (viewport), not scrollable content
+    return await html2canvas(element, {
       backgroundColor: null,
       scale: 2,
       logging: false,
       useCORS: true,
+      // Limit capture to visible viewport
+      height: Math.min(element.clientHeight, element.scrollHeight),
+      width: element.clientWidth,
+      windowHeight: element.clientHeight,
+      windowWidth: element.clientWidth,
+      // Don't scroll, capture what's visible
+      scrollX: 0,
+      scrollY: 0,
+      // Clip to visible area
+      x: 0,
+      y: 0,
     });
   }, [previewRef]);
 
