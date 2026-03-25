@@ -58,8 +58,11 @@ export function ClaudeAISkin({ messages, darkMode, selectedModel }: Props) {
             <div key={message.id}>
               {message.role === 'user' ? (
                 <div className="flex justify-end">
-                  <div className={`${userBubble} rounded-[20px] px-4 py-3 max-w-[85%]`}>
-                    <div className="whitespace-pre-wrap text-[15px] leading-relaxed">{message.content}</div>
+                  <div 
+                    className={`${userBubble} max-w-[85%]`}
+                    style={{ borderRadius: '20px', padding: '10px 16px' }}
+                  >
+                    <div style={{ whiteSpace: 'pre-wrap', fontSize: '15px', lineHeight: '1.6' }}>{message.content}</div>
                   </div>
                 </div>
               ) : (

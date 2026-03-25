@@ -48,8 +48,8 @@ export function ChatGPTSkin({ messages, darkMode, selectedModel: _selectedModel 
               /* User message - right aligned bubble, no avatar, no label */
               <div className="space-y-1">
                 <div className="flex justify-end">
-                  <div className={`${userBubble} rounded-3xl px-4 py-3 max-w-[85%]`}>
-                    <div className="whitespace-pre-wrap leading-relaxed">{message.content}</div>
+                  <div className={`${userBubble} max-w-[85%]`} style={{ borderRadius: '24px', padding: '10px 16px' }}>
+                    <div style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>{message.content}</div>
                   </div>
                 </div>
                 {/* Action icons below user message, right aligned */}
