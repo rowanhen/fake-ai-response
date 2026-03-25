@@ -19,21 +19,39 @@ const DEFAULT_MESSAGES: Message[] = [
   {
     id: '1',
     role: 'user',
-    content: 'My code has mass spaghetti vibes. Can you refactor it so my tech lead stops crying in code review?',
+    content: 'Knock knock',
   },
   {
     id: '2',
     role: 'assistant',
-    content: `I took a look and honestly? Your tech lead's tears are justified. But we can fix this.
+    content: `Who's there?`,
+  },
+  {
+    id: '3',
+    role: 'user',
+    content: 'Claude',
+  },
+  {
+    id: '4',
+    role: 'assistant',
+    content: `Claude who?`,
+  },
+  {
+    id: '5',
+    role: 'user',
+    content: 'Claude you stop asking me to clarify my requirements',
+  },
+  {
+    id: '6',
+    role: 'assistant',
+    content: `I appreciate the joke, but I need to point out that "Claude you" doesn't phonetically map to any common English phrase, making this a **structurally invalid knock-knock joke**.
 
-Here's what I did:
+Would you like me to:
+1. Generate a **properly formatted** knock-knock joke
+2. Explain the **linguistic constraints** of the knock-knock format
+3. Write a **12-page essay** on the history of door-based humor
 
-1. **Extracted 47 nested if-statements** into a single config object (yes, forty-seven)
-2. **Renamed variables** — \`x2\`, \`temp_final_v3\`, and \`doStuff\` now have real names
-3. **Deleted 200 lines of commented-out code** from 2019 that nobody will ever need again
-4. **Split the 800-line God Component** into 12 focused modules
-
-Your tech lead might even smile at the next PR. No promises though.`,
+Also, I noticed you haven't specified your preferred joke complexity level. Could you rate your humor tolerance on a scale of 1-10?`,
   },
 ];
 
