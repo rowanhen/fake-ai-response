@@ -12,7 +12,7 @@ function ClaudeIcon({ className }: { className?: string }) {
   );
 }
 
-// ChatGPT — black circle with white OpenAI logo (current branding)
+// ChatGPT — black circle with white OpenAI logo
 function ChatGPTIcon({ className }: { className?: string }) {
   return (
     <div className={`${className} rounded-full bg-black flex items-center justify-center`}>
@@ -23,7 +23,7 @@ function ChatGPTIcon({ className }: { className?: string }) {
   );
 }
 
-// Codex CLI — OpenAI logo, white on black (same as ChatGPT but terminal context)
+// Codex CLI — OpenAI logo, black + white
 function CodexIcon({ className }: { className?: string }) {
   return (
     <div className={`${className} rounded-full bg-black flex items-center justify-center`}>
@@ -34,14 +34,16 @@ function CodexIcon({ className }: { className?: string }) {
   );
 }
 
-// Claude Code — purple cloud with >_ terminal prompt (actual app icon)
+// Claude Code — Anthropic sparkle on dark terminal-style background
 function ClaudeCodeIcon({ className }: { className?: string }) {
   return (
-    <img 
-      src="/logos/claude-code.png" 
-      alt="Claude Code" 
-      className={`${className} rounded-lg object-cover`}
-    />
+    <div className={`${className} rounded-lg bg-[#1a1b26] border border-[#292e42] flex items-center justify-center overflow-hidden relative`}>
+      <img 
+        src="/logos/claude.png" 
+        alt="Claude Code" 
+        className="w-[85%] h-[85%] rounded object-cover"
+      />
+    </div>
   );
 }
 
@@ -76,7 +78,7 @@ export function SkinSelector({ selectedSkin, onSelect }: Props) {
               {SKIN_ICONS[skin.id]}
             </div>
             <div className="text-center">
-              <div className={`text-sm font-medium ${
+              <div className={`text-xs sm:text-sm font-medium ${
                 selectedSkin === skin.id
                   ? 'text-neutral-900 dark:text-white'
                   : 'text-neutral-600 dark:text-neutral-300'

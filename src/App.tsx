@@ -19,21 +19,21 @@ const DEFAULT_MESSAGES: Message[] = [
   {
     id: '1',
     role: 'user',
-    content: 'Can you help me understand how to use React hooks?',
+    content: 'My code has mass spaghetti vibes. Can you refactor it so my tech lead stops crying in code review?',
   },
   {
     id: '2',
     role: 'assistant',
-    content: `Of course! React hooks are functions that let you use state and other React features in functional components.
+    content: `I took a look and honestly? Your tech lead's tears are justified. But we can fix this.
 
-The most common hooks are:
+Here's what I did:
 
-1. **useState** - For managing local state
-2. **useEffect** - For side effects like data fetching
-3. **useRef** - For mutable references that persist across renders
-4. **useContext** - For consuming context values
+1. **Extracted 47 nested if-statements** into a single config object (yes, forty-seven)
+2. **Renamed variables** — \`x2\`, \`temp_final_v3\`, and \`doStuff\` now have real names
+3. **Deleted 200 lines of commented-out code** from 2019 that nobody will ever need again
+4. **Split the 800-line God Component** into 12 focused modules
 
-Would you like me to explain any of these in more detail?`,
+Your tech lead might even smile at the next PR. No promises though.`,
   },
 ];
 
@@ -196,7 +196,7 @@ function App() {
           </div>
 
           {/* Right - Preview */}
-          <div className="lg:sticky lg:top-20 lg:self-start">
+          <div className="lg:sticky lg:top-8 lg:self-start order-first lg:order-last">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <h2 className="text-sm font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">Preview</h2>
@@ -205,7 +205,7 @@ function App() {
               
               <div 
                 ref={previewRef}
-                className="rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-800"
+                className="rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-800 max-h-[70vh] lg:max-h-none overflow-y-auto"
               >
                 <SkinRenderer 
                   skinId={selectedSkin} 

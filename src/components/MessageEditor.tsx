@@ -11,7 +11,7 @@ export function MessageEditor({ messages, setMessages }: Props) {
     const newMessage: Message = {
       id: crypto.randomUUID(),
       role,
-      content: role === 'user' ? 'Hello!' : 'Hi there! How can I help you today?',
+      content: role === 'user' ? 'Why is my code not working? I\'ve tried everything except reading the error message.' : 'I see the issue — the error message literally says what\'s wrong on line 42. Classic.',
     };
     setMessages([...messages, newMessage]);
   };
