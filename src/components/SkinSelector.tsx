@@ -34,11 +34,11 @@ function CodexIcon({ className }: { className?: string }) {
   );
 }
 
-// Claude Code — uses the Claude/Anthropic logo (same as claude.ai icon)
+// Claude Code — purple cloud with >_ terminal prompt (actual app icon)
 function ClaudeCodeIcon({ className }: { className?: string }) {
   return (
     <img 
-      src="/logos/claude.png" 
+      src="/logos/claude-code.png" 
       alt="Claude Code" 
       className={`${className} rounded-lg object-cover`}
     />
