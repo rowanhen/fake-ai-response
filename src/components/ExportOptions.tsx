@@ -44,13 +44,23 @@ export function ExportOptions({ previewRef }: Props) {
 
   const captureImage = useCallback(async () => {
     if (!previewRef.current) return null;
-    return await html2canvas(previewRef.current, {
+    const element = previewRef.current;
+    // Capture the element's current rendered width so the clone matches exactly
+    const rect = element.getBoundingClientRect();
+    
+    return await html2canvas(element, {
       backgroundColor: null,
       scale: 2,
       logging: false,
       useCORS: true,
+      width: rect.width,
       scrollY: -window.scrollY,
       onclone: (_doc, clonedElement) => {
+        // Force the cloned element to the same width as the original
+        clonedElement.style.width = `${rect.width}px`;
+        clonedElement.style.minWidth = `${rect.width}px`;
+        clonedElement.style.maxWidth = `${rect.width}px`;
+        clonedElement.style.overflow = 'visible';
         sanitizeColors(clonedElement);
       }
     });
