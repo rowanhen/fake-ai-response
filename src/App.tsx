@@ -224,7 +224,7 @@ function App() {
       <footer className="border-t border-neutral-200 dark:border-neutral-800 py-6 mt-12">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p className="text-xs text-neutral-400 dark:text-neutral-600">
-            Not affiliated with OpenAI, Anthropic, GitHub, or Cursor
+            Not affiliated with OpenAI or Anthropic
           </p>
         </div>
       </footer>

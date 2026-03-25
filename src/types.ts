@@ -6,7 +6,7 @@ export interface Message {
   content: string;
 }
 
-export type SkinId = 'claude-code' | 'chatgpt' | 'claude-ai' | 'cursor' | 'codex-cli' | 'copilot';
+export type SkinId = 'claude-ai' | 'chatgpt' | 'codex-cli' | 'claude-code';
 
 export interface Skin {
   id: SkinId;
@@ -50,31 +50,17 @@ export const SKINS: Skin[] = [
     models: ['GPT-4o', 'GPT-4', 'GPT-3.5'],
   },
   {
-    id: 'cursor',
-    name: 'Cursor',
-    description: 'IDE chat panel',
-    supportsDarkMode: false, // Always dark
-    models: ['claude-3.5-sonnet', 'gpt-4o', 'cursor-small'],
-  },
-  {
     id: 'codex-cli',
     name: 'Codex CLI',
     description: 'OpenAI terminal interface',
-    supportsDarkMode: false, // Always dark
+    supportsDarkMode: false,
     models: ['codex-mini', 'o4-mini', 'o3'],
-  },
-  {
-    id: 'copilot',
-    name: 'GitHub Copilot',
-    description: 'VS Code chat panel',
-    supportsDarkMode: true,
-    models: ['GPT-4o', 'Claude 3.5 Sonnet', 'o3-mini'],
   },
   {
     id: 'claude-code',
     name: 'Claude Code',
     description: 'Terminal TUI with ❯ prompt',
-    supportsDarkMode: false, // Always dark
+    supportsDarkMode: false,
     models: ['Claude 4 Sonnet', 'Claude 4 Opus'],
   },
 ];
