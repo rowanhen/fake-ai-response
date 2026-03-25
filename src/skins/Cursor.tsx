@@ -1,19 +1,25 @@
-import type { Message } from '../types';
+import type { Message, UserAvatar } from '../types';
 import { Markdown } from '../components/Markdown';
+import { ChevronDown } from 'lucide-react';
 
 interface Props {
   messages: Message[];
+  selectedModel: string;
+  userAvatar: UserAvatar;
 }
 
-export function CursorSkin({ messages }: Props) {
+export function CursorSkin({ messages, selectedModel, userAvatar }: Props) {
   return (
     <div className="bg-[#1e1e1e] text-[#cccccc] min-h-[400px] rounded-lg overflow-auto dark-scrollbar font-sans text-sm">
       {/* VS Code style header */}
       <div className="sticky top-0 bg-[#252526] border-b border-[#3c3c3c] px-3 py-2 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <svg className="w-4 h-4 text-[#007acc]" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-          </svg>
+          {/* Cursor logo */}
+          <img 
+            src="/logos/cursor.png" 
+            alt="Cursor" 
+            className="w-4 h-4 rounded-sm"
+          />
           <span className="text-[#cccccc] font-medium">Cursor</span>
           <span className="text-[#858585] text-xs">Chat</span>
         </div>
@@ -33,13 +39,11 @@ export function CursorSkin({ messages }: Props) {
 
       {/* Model selector */}
       <div className="bg-[#252526] border-b border-[#3c3c3c] px-3 py-1.5 flex items-center gap-2">
-        <div className="flex items-center gap-1.5 px-2 py-1 bg-[#37373d] rounded text-xs">
+        <button className="flex items-center gap-1.5 px-2 py-1 bg-[#37373d] hover:bg-[#404040] rounded text-xs transition-colors">
           <div className="w-2 h-2 rounded-full bg-[#4ec9b0]"></div>
-          <span>claude-3.5-sonnet</span>
-          <svg className="w-3 h-3 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </div>
+          <span>{selectedModel}</span>
+          <ChevronDown className="w-3 h-3 opacity-60" />
+        </button>
       </div>
 
       {/* Messages */}
@@ -48,20 +52,25 @@ export function CursorSkin({ messages }: Props) {
           <div key={message.id}>
             {message.role === 'user' ? (
               <div className="flex gap-3">
-                <div className="flex-shrink-0 w-6 h-6 rounded bg-[#4a9eff] flex items-center justify-center text-white text-xs font-medium">
-                  U
+                <div 
+                  className="flex-shrink-0 w-6 h-6 rounded flex items-center justify-center text-white text-xs font-medium"
+                  style={{ backgroundColor: userAvatar.color }}
+                >
+                  {userAvatar.initials}
                 </div>
                 <div className="flex-1 pt-0.5">
-                  <div className="text-[#4a9eff] text-xs mb-1 font-medium">You</div>
+                  <div className="text-[#4a9eff] text-xs mb-1 font-medium">{userAvatar.name}</div>
                   <div className="whitespace-pre-wrap">{message.content}</div>
                 </div>
               </div>
             ) : (
               <div className="flex gap-3 bg-[#2d2d30] -mx-3 px-3 py-3">
                 <div className="flex-shrink-0 w-6 h-6 rounded bg-gradient-to-br from-[#4ec9b0] to-[#45b8a5] flex items-center justify-center">
-                  <svg className="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="currentColor">
-                    <circle cx="12" cy="12" r="3" />
-                  </svg>
+                  <img 
+                    src="/logos/cursor.png" 
+                    alt="Cursor" 
+                    className="w-4 h-4 rounded-sm"
+                  />
                 </div>
                 <div className="flex-1 pt-0.5">
                   <div className="text-[#4ec9b0] text-xs mb-1 font-medium">Cursor</div>

@@ -3,9 +3,13 @@ import { Markdown } from '../components/Markdown';
 
 interface Props {
   messages: Message[];
+  selectedModel: string;
 }
 
-export function ClaudeCodeSkin({ messages }: Props) {
+export function ClaudeCodeSkin({ messages, selectedModel }: Props) {
+  const purpleAccent = '#c5a5ff';
+  const purpleBorder = '#8b5cf6';
+  
   return (
     <div className="bg-[#1a1a1a] text-[#e0e0e0] font-mono text-sm min-h-[400px] p-4 rounded-lg overflow-auto dark-scrollbar">
       {/* Terminal header */}
@@ -19,12 +23,13 @@ export function ClaudeCodeSkin({ messages }: Props) {
       </div>
 
       {/* Welcome banner */}
-      <div className="mb-4 text-[#888]">
-        <div className="text-[#c5a5ff]">╭───────────────────────────────────────╮</div>
-        <div className="text-[#c5a5ff]">│</div>
-        <div className="text-[#c5a5ff]">│  <span className="text-white font-bold">Claude Code</span> <span className="text-[#888]">v1.0.0</span></div>
-        <div className="text-[#c5a5ff]">│</div>
-        <div className="text-[#c5a5ff]">╰───────────────────────────────────────╯</div>
+      <div className="mb-6">
+        <div style={{ color: purpleAccent }}>╭───────────────────────────────────────────────╮</div>
+        <div style={{ color: purpleAccent }}>│</div>
+        <div style={{ color: purpleAccent }}>│  <span className="text-white font-bold">Claude Code</span> <span className="text-[#888]">v1.0.0</span></div>
+        <div style={{ color: purpleAccent }}>│  <span className="text-[#888]">Model: <span className="text-[#c5a5ff]">{selectedModel}</span></span></div>
+        <div style={{ color: purpleAccent }}>│</div>
+        <div style={{ color: purpleAccent }}>╰───────────────────────────────────────────────╯</div>
       </div>
 
       {/* Messages */}
@@ -33,11 +38,14 @@ export function ClaudeCodeSkin({ messages }: Props) {
           <div key={message.id}>
             {message.role === 'user' ? (
               <div className="flex items-start gap-2">
-                <span className="text-[#c5a5ff] font-bold">❯</span>
+                <span style={{ color: purpleAccent }} className="font-bold">❯</span>
                 <span className="text-white whitespace-pre-wrap">{message.content}</span>
               </div>
             ) : (
-              <div className="pl-4 border-l-2 border-[#333] ml-1">
+              <div 
+                className="pl-4 ml-1 py-2"
+                style={{ borderLeft: `2px solid ${purpleBorder}` }}
+              >
                 <Markdown content={message.content} className="text-[#e0e0e0] leading-relaxed" />
               </div>
             )}
@@ -47,8 +55,8 @@ export function ClaudeCodeSkin({ messages }: Props) {
 
       {/* Blinking cursor */}
       <div className="flex items-start gap-2 mt-4">
-        <span className="text-[#c5a5ff] font-bold">❯</span>
-        <span className="animate-pulse">▋</span>
+        <span style={{ color: purpleAccent }} className="font-bold">❯</span>
+        <span className="animate-pulse text-[#888]">▋</span>
       </div>
     </div>
   );

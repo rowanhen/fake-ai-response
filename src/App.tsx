@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
-import type { Message, SkinId } from './types';
-import { SKINS } from './types';
+import type { Message, SkinId, UserAvatar } from './types';
+import { SKINS, AVATAR_COLORS } from './types';
 import { SkinRenderer } from './skins';
 import { MessageEditor } from './components/MessageEditor';
 import { SkinSelector } from './components/SkinSelector';
 import { ExportOptions } from './components/ExportOptions';
-import { Sun, Moon } from 'lucide-react';
+import { Sun, Moon, ChevronDown } from 'lucide-react';
 
 function GithubIcon({ className }: { className?: string }) {
   return (
@@ -37,11 +37,25 @@ Would you like me to explain any of these in more detail?`,
   },
 ];
 
+const DEFAULT_AVATAR: UserAvatar = {
+  name: 'You',
+  initials: 'U',
+  color: AVATAR_COLORS[0],
+};
+
 function App() {
   const [messages, setMessages] = useState<Message[]>(DEFAULT_MESSAGES);
-  const [selectedSkin, setSelectedSkin] = useState<SkinId>('claude-code');
+  const [selectedSkin, setSelectedSkin] = useState<SkinId>('claude-ai');
   const [darkMode, setDarkMode] = useState(true);
   const [appDarkMode, setAppDarkMode] = useState(true);
+  const [userAvatar, setUserAvatar] = useState<UserAvatar>(DEFAULT_AVATAR);
+  const [selectedModels, setSelectedModels] = useState<Record<SkinId, string>>(() => {
+    const initial: Record<string, string> = {};
+    SKINS.forEach(skin => {
+      initial[skin.id] = skin.models[0];
+    });
+    return initial as Record<SkinId, string>;
+  });
   const previewRef = useRef<HTMLDivElement>(null!);
 
   const currentSkin = SKINS.find(s => s.id === selectedSkin);
@@ -54,6 +68,20 @@ function App() {
     mediaQuery.addEventListener('change', handler);
     return () => mediaQuery.removeEventListener('change', handler);
   }, []);
+
+  const handleModelChange = (model: string) => {
+    setSelectedModels(prev => ({
+      ...prev,
+      [selectedSkin]: model,
+    }));
+  };
+
+  const handleAvatarNameChange = (name: string) => {
+    const initials = name.trim() 
+      ? name.trim().split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) 
+      : 'U';
+    setUserAvatar(prev => ({ ...prev, name, initials }));
+  };
 
   return (
     <div className={`min-h-screen ${appDarkMode ? 'dark bg-neutral-950' : 'bg-white'}`}>
@@ -92,6 +120,57 @@ function App() {
           <div className="space-y-6">
             <SkinSelector selectedSkin={selectedSkin} onSelect={setSelectedSkin} />
             
+            {/* Model Selector */}
+            {currentSkin && (
+              <div className="space-y-2">
+                <h2 className="text-sm font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">Model</h2>
+                <div className="relative">
+                  <select
+                    value={selectedModels[selectedSkin]}
+                    onChange={(e) => handleModelChange(e.target.value)}
+                    className="w-full appearance-none bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg px-3 py-2 pr-8 text-sm text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-neutral-400"
+                  >
+                    {currentSkin.models.map((model) => (
+                      <option key={model} value={model}>{model}</option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none" />
+                </div>
+              </div>
+            )}
+            
+            {/* User Avatar Settings */}
+            <div className="space-y-3">
+              <h2 className="text-sm font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">Your Avatar</h2>
+              <div className="flex items-center gap-4">
+                <div 
+                  className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-medium shrink-0"
+                  style={{ backgroundColor: userAvatar.color }}
+                >
+                  {userAvatar.initials}
+                </div>
+                <input
+                  type="text"
+                  value={userAvatar.name}
+                  onChange={(e) => handleAvatarNameChange(e.target.value)}
+                  placeholder="Your name"
+                  className="flex-1 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg px-3 py-2 text-sm text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-neutral-400"
+                />
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {AVATAR_COLORS.map((color) => (
+                  <button
+                    key={color}
+                    onClick={() => setUserAvatar(prev => ({ ...prev, color }))}
+                    className={`w-6 h-6 rounded-full transition-transform ${
+                      userAvatar.color === color ? 'ring-2 ring-offset-2 ring-neutral-400 dark:ring-offset-neutral-950 scale-110' : 'hover:scale-105'
+                    }`}
+                    style={{ backgroundColor: color }}
+                  />
+                ))}
+              </div>
+            </div>
+
             {skinSupportsDarkMode && (
               <div className="flex items-center justify-between py-2">
                 <span className="text-sm text-neutral-500 dark:text-neutral-400">
@@ -132,6 +211,8 @@ function App() {
                   skinId={selectedSkin} 
                   messages={messages} 
                   darkMode={darkMode}
+                  selectedModel={selectedModels[selectedSkin]}
+                  userAvatar={userAvatar}
                 />
               </div>
             </div>

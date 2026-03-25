@@ -3,9 +3,10 @@ import { Markdown } from '../components/Markdown';
 
 interface Props {
   messages: Message[];
+  selectedModel: string;
 }
 
-export function CodexCLISkin({ messages }: Props) {
+export function CodexCLISkin({ messages, selectedModel }: Props) {
   return (
     <div className="bg-[#0d1117] text-[#c9d1d9] font-mono text-sm min-h-[400px] p-4 rounded-lg overflow-auto dark-scrollbar">
       {/* Terminal header */}
@@ -19,13 +20,16 @@ export function CodexCLISkin({ messages }: Props) {
       </div>
 
       {/* Welcome message */}
-      <div className="mb-4 text-[#58a6ff]">
+      <div className="mb-4">
         <div className="flex items-center gap-2">
           <span className="text-[#3fb950]">◆</span>
-          <span className="font-bold">OpenAI Codex CLI</span>
+          <span className="font-bold text-[#58a6ff]">OpenAI Codex CLI</span>
           <span className="text-[#8b949e]">v0.1.0</span>
         </div>
         <div className="text-[#8b949e] mt-1 ml-5">Type your request in natural language</div>
+        <div className="text-[#8b949e] mt-1 ml-5 text-xs">
+          Model: <span className="text-[#3fb950]">{selectedModel}</span>
+        </div>
       </div>
 
       {/* Messages */}
@@ -56,10 +60,10 @@ export function CodexCLISkin({ messages }: Props) {
         ))}
       </div>
 
-      {/* Input prompt */}
+      {/* Input prompt with blinking cursor */}
       <div className="flex items-start gap-2 mt-4">
         <span className="text-[#3fb950] font-bold">$</span>
-        <span className="animate-pulse text-[#58a6ff]">▋</span>
+        <span className="text-[#58a6ff] animate-pulse">▋</span>
       </div>
     </div>
   );
