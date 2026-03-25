@@ -1,4 +1,5 @@
 import type { Message } from '../types';
+import { Markdown } from '../components/Markdown';
 
 interface Props {
   messages: Message[];
@@ -38,20 +39,16 @@ export function CodexCLISkin({ messages }: Props) {
               </div>
             ) : (
               <div className="mt-2 ml-4">
-                {/* Thinking indicator */}
                 <div className="flex items-center gap-2 text-[#8b949e] text-xs mb-2">
                   <span className="text-[#58a6ff]">⟳</span>
                   <span>Thinking...</span>
                 </div>
-                {/* Response */}
                 <div className="bg-[#161b22] border border-[#30363d] rounded-md p-3">
                   <div className="flex items-center gap-2 mb-2 text-xs text-[#8b949e] border-b border-[#30363d] pb-2">
                     <span className="text-[#3fb950]">✓</span>
                     <span>Response</span>
                   </div>
-                  <div className="text-[#c9d1d9] whitespace-pre-wrap leading-relaxed">
-                    {message.content}
-                  </div>
+                  <Markdown content={message.content} className="text-[#c9d1d9] leading-relaxed" />
                 </div>
               </div>
             )}

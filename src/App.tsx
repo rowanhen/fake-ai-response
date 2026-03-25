@@ -47,74 +47,65 @@ function App() {
   const currentSkin = SKINS.find(s => s.id === selectedSkin);
   const skinSupportsDarkMode = currentSkin?.supportsDarkMode ?? false;
 
-  // Sync app dark mode with system preference
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     setAppDarkMode(mediaQuery.matches);
-    
     const handler = (e: MediaQueryListEvent) => setAppDarkMode(e.matches);
     mediaQuery.addEventListener('change', handler);
     return () => mediaQuery.removeEventListener('change', handler);
   }, []);
 
   return (
-    <div className={`min-h-screen ${appDarkMode ? 'dark bg-gray-900' : 'bg-gray-50'}`}>
+    <div className={`min-h-screen ${appDarkMode ? 'dark bg-neutral-950' : 'bg-white'}`}>
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
+      <header className="border-b border-neutral-200 dark:border-neutral-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-14">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
-                <span className="text-white text-xl">🎭</span>
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900 dark:text-white">Fake AI Response</h1>
-                <p className="text-xs text-gray-500 dark:text-gray-400">Generate realistic AI screenshots</p>
-              </div>
+              <h1 className="text-base font-semibold text-neutral-900 dark:text-neutral-100 tracking-tight">fake ai response</h1>
+              <span className="text-xs text-neutral-400 dark:text-neutral-600 hidden sm:inline">generate realistic ai screenshots</span>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1">
               <button
                 onClick={() => setAppDarkMode(!appDarkMode)}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors"
-                title="Toggle dark mode"
+                className="p-2 rounded-md text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors"
               >
-                {appDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                {appDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
               </button>
               <a
                 href="https://github.com/rowanhen/fake-ai-response"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors"
+                className="p-2 rounded-md text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors"
               >
-                <GithubIcon className="w-5 h-5" />
+                <GithubIcon className="w-4 h-4" />
               </a>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Main content */}
+      {/* Main */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left column - Editor */}
+          {/* Left - Editor */}
           <div className="space-y-6">
             <SkinSelector selectedSkin={selectedSkin} onSelect={setSelectedSkin} />
             
-            {/* Dark mode toggle for skins that support it */}
             {skinSupportsDarkMode && (
-              <div className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Preview Dark Mode
+              <div className="flex items-center justify-between py-2">
+                <span className="text-sm text-neutral-500 dark:text-neutral-400">
+                  Preview dark mode
                 </span>
                 <button
                   onClick={() => setDarkMode(!darkMode)}
-                  className={`relative w-12 h-6 rounded-full transition-colors ${
-                    darkMode ? 'bg-purple-500' : 'bg-gray-300 dark:bg-gray-600'
+                  className={`relative w-10 h-5 rounded-full transition-colors ${
+                    darkMode ? 'bg-neutral-700' : 'bg-neutral-300'
                   }`}
                 >
                   <div
-                    className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${
-                      darkMode ? 'translate-x-7' : 'translate-x-1'
+                    className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform shadow-sm ${
+                      darkMode ? 'translate-x-5' : 'translate-x-0.5'
                     }`}
                   />
                 </button>
@@ -122,21 +113,20 @@ function App() {
             )}
 
             <MessageEditor messages={messages} setMessages={setMessages} />
-            
             <ExportOptions previewRef={previewRef} />
           </div>
 
-          {/* Right column - Preview */}
-          <div className="lg:sticky lg:top-24 lg:self-start">
+          {/* Right - Preview */}
+          <div className="lg:sticky lg:top-20 lg:self-start">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Preview</h2>
-                <span className="text-sm text-gray-500 dark:text-gray-400">{currentSkin?.name}</span>
+                <h2 className="text-sm font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">Preview</h2>
+                <span className="text-xs text-neutral-400 dark:text-neutral-600">{currentSkin?.name}</span>
               </div>
               
               <div 
                 ref={previewRef}
-                className="rounded-xl overflow-hidden shadow-2xl ring-1 ring-gray-200 dark:ring-gray-700"
+                className="rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-800"
               >
                 <SkinRenderer 
                   skinId={selectedSkin} 
@@ -144,20 +134,16 @@ function App() {
                   darkMode={darkMode}
                 />
               </div>
-              
-              <p className="text-xs text-center text-gray-400 dark:text-gray-500">
-                Tip: Add more messages to see how the conversation looks
-              </p>
             </div>
           </div>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 dark:border-gray-700 py-6 mt-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Made for fun • Not affiliated with OpenAI, Anthropic, GitHub, or Cursor
+      <footer className="border-t border-neutral-200 dark:border-neutral-800 py-6 mt-12">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <p className="text-xs text-neutral-400 dark:text-neutral-600">
+            Not affiliated with OpenAI, Anthropic, GitHub, or Cursor
           </p>
         </div>
       </footer>

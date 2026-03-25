@@ -1,4 +1,5 @@
 import type { Message } from '../types';
+import { Markdown } from '../components/Markdown';
 
 interface Props {
   messages: Message[];
@@ -9,7 +10,6 @@ export function ClaudeAISkin({ messages, darkMode }: Props) {
   const bg = darkMode ? 'bg-[#2b2a27]' : 'bg-[#f5f4ef]';
   const text = darkMode ? 'text-[#e8e6e3]' : 'text-[#1a1915]';
   const userBubble = darkMode ? 'bg-[#403e3a]' : 'bg-[#e8e7e2]';
-  const assistantBg = darkMode ? 'bg-transparent' : 'bg-transparent';
   const border = darkMode ? 'border-[#3d3c38]' : 'border-[#e0dfd8]';
   const scrollbar = darkMode ? 'dark-scrollbar' : 'light-scrollbar';
 
@@ -18,7 +18,6 @@ export function ClaudeAISkin({ messages, darkMode }: Props) {
       {/* Header */}
       <div className={`sticky top-0 ${bg} border-b ${border} px-6 py-4 flex items-center justify-between`}>
         <div className="flex items-center gap-3">
-          {/* Claude logo */}
           <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#cc785c] to-[#d4a27a] flex items-center justify-center">
             <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
               <circle cx="12" cy="12" r="3" />
@@ -40,15 +39,14 @@ export function ClaudeAISkin({ messages, darkMode }: Props) {
                 <div className="whitespace-pre-wrap">{message.content}</div>
               </div>
             ) : (
-              <div className={`${assistantBg} flex gap-4`}>
-                {/* Claude avatar */}
+              <div className="flex gap-4">
                 <div className="flex-shrink-0 w-7 h-7 rounded-full bg-gradient-to-br from-[#cc785c] to-[#d4a27a] flex items-center justify-center mt-1">
                   <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
                     <circle cx="12" cy="12" r="3" />
                   </svg>
                 </div>
-                <div className="flex-1 whitespace-pre-wrap leading-relaxed pt-1">
-                  {message.content}
+                <div className="flex-1 pt-1">
+                  <Markdown content={message.content} className="leading-relaxed" />
                 </div>
               </div>
             )}

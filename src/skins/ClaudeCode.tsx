@@ -1,4 +1,5 @@
 import type { Message } from '../types';
+import { Markdown } from '../components/Markdown';
 
 interface Props {
   messages: Message[];
@@ -36,8 +37,8 @@ export function ClaudeCodeSkin({ messages }: Props) {
                 <span className="text-white whitespace-pre-wrap">{message.content}</span>
               </div>
             ) : (
-              <div className="pl-4 text-[#e0e0e0] whitespace-pre-wrap border-l-2 border-[#333] ml-1">
-                {message.content}
+              <div className="pl-4 border-l-2 border-[#333] ml-1">
+                <Markdown content={message.content} className="text-[#e0e0e0] leading-relaxed" />
               </div>
             )}
           </div>

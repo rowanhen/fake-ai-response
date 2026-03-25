@@ -1,5 +1,5 @@
 import type { Message, Role } from '../types';
-import { GripVertical, Trash2, Plus, User, Bot } from 'lucide-react';
+import { GripVertical, Trash2, Plus, User, Bot, ChevronUp, ChevronDown } from 'lucide-react';
 
 interface Props {
   messages: Message[];
@@ -31,10 +31,8 @@ export function MessageEditor({ messages, setMessages }: Props) {
   const moveMessage = (id: string, direction: 'up' | 'down') => {
     const index = messages.findIndex(m => m.id === id);
     if (index === -1) return;
-    
     const newIndex = direction === 'up' ? index - 1 : index + 1;
     if (newIndex < 0 || newIndex >= messages.length) return;
-    
     const newMessages = [...messages];
     [newMessages[index], newMessages[newIndex]] = [newMessages[newIndex], newMessages[index]];
     setMessages(newMessages);
@@ -43,108 +41,88 @@ export function MessageEditor({ messages, setMessages }: Props) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Messages</h2>
+        <h2 className="text-sm font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">Messages</h2>
         <div className="flex gap-2">
           <button
             onClick={() => addMessage('user')}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-300 rounded-md hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
           >
-            <User className="w-4 h-4" />
-            Add User
+            <User className="w-3.5 h-3.5" />
+            User
           </button>
           <button
             onClick={() => addMessage('assistant')}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-300 rounded-md hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
           >
-            <Bot className="w-4 h-4" />
-            Add Assistant
+            <Bot className="w-3.5 h-3.5" />
+            Assistant
           </button>
         </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         {messages.length === 0 && (
-          <div className="text-center py-8 text-gray-500 dark:text-gray-400 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-lg">
-            <Plus className="w-8 h-8 mx-auto mb-2 opacity-50" />
-            <p>No messages yet. Add a user or assistant message to get started.</p>
+          <div className="text-center py-8 text-neutral-400 dark:text-neutral-500 border border-dashed border-neutral-300 dark:border-neutral-700 rounded-lg">
+            <Plus className="w-6 h-6 mx-auto mb-2 opacity-50" />
+            <p className="text-sm">Add a message to get started</p>
           </div>
         )}
 
         {messages.map((message, index) => (
           <div
             key={message.id}
-            className="group bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden"
+            className="group border border-neutral-200 dark:border-neutral-700 rounded-lg overflow-hidden"
           >
-            {/* Message header */}
-            <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 dark:bg-gray-750 border-b border-gray-200 dark:border-gray-700">
-              <button
-                className="cursor-grab active:cursor-grabbing p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                title="Drag to reorder"
-              >
-                <GripVertical className="w-4 h-4" />
-              </button>
+            <div className="flex items-center gap-2 px-3 py-2 border-b border-neutral-100 dark:border-neutral-800">
+              <GripVertical className="w-3.5 h-3.5 text-neutral-300 dark:text-neutral-600 cursor-grab" />
               
               <button
                 onClick={() => toggleRole(message.id)}
-                className={`flex items-center gap-1.5 px-2 py-1 rounded text-sm font-medium transition-colors ${
+                className={`flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium border transition-colors ${
                   message.role === 'user'
-                    ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300'
-                    : 'bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300'
+                    ? 'border-neutral-300 dark:border-neutral-600 text-neutral-600 dark:text-neutral-300'
+                    : 'border-neutral-300 dark:border-neutral-600 text-neutral-600 dark:text-neutral-300'
                 }`}
                 title="Click to toggle role"
               >
                 {message.role === 'user' ? (
-                  <>
-                    <User className="w-3.5 h-3.5" />
-                    User
-                  </>
+                  <><User className="w-3 h-3" /> User</>
                 ) : (
-                  <>
-                    <Bot className="w-3.5 h-3.5" />
-                    Assistant
-                  </>
+                  <><Bot className="w-3 h-3" /> Assistant</>
                 )}
               </button>
 
               <div className="flex-1" />
 
-              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
                   onClick={() => moveMessage(message.id, 'up')}
                   disabled={index === 0}
-                  className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed"
-                  title="Move up"
+                  className="p-1 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 disabled:opacity-20"
                 >
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                  </svg>
+                  <ChevronUp className="w-3.5 h-3.5" />
                 </button>
                 <button
                   onClick={() => moveMessage(message.id, 'down')}
                   disabled={index === messages.length - 1}
-                  className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed"
-                  title="Move down"
+                  className="p-1 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 disabled:opacity-20"
                 >
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
+                  <ChevronDown className="w-3.5 h-3.5" />
                 </button>
                 <button
                   onClick={() => deleteMessage(message.id)}
-                  className="p-1 text-gray-400 hover:text-red-500 dark:hover:text-red-400"
-                  title="Delete message"
+                  className="p-1 text-neutral-400 hover:text-red-500"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
 
-            {/* Message content */}
             <textarea
               value={message.content}
               onChange={(e) => updateMessage(message.id, e.target.value)}
               placeholder={`Enter ${message.role} message...`}
-              className="w-full px-3 py-2 bg-transparent text-gray-900 dark:text-white placeholder-gray-400 resize-none focus:outline-none min-h-[80px]"
+              className="w-full px-3 py-2 bg-transparent text-neutral-800 dark:text-neutral-200 placeholder-neutral-300 dark:placeholder-neutral-600 resize-none focus:outline-none min-h-[72px] text-sm"
               rows={3}
             />
           </div>

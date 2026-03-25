@@ -1,4 +1,5 @@
 import type { Message } from '../types';
+import { Markdown } from '../components/Markdown';
 
 interface Props {
   messages: Message[];
@@ -44,7 +45,7 @@ export function CursorSkin({ messages }: Props) {
       {/* Messages */}
       <div className="px-3 py-4 space-y-4">
         {messages.map((message) => (
-          <div key={message.id} className={message.role === 'user' ? '' : ''}>
+          <div key={message.id}>
             {message.role === 'user' ? (
               <div className="flex gap-3">
                 <div className="flex-shrink-0 w-6 h-6 rounded bg-[#4a9eff] flex items-center justify-center text-white text-xs font-medium">
@@ -64,7 +65,7 @@ export function CursorSkin({ messages }: Props) {
                 </div>
                 <div className="flex-1 pt-0.5">
                   <div className="text-[#4ec9b0] text-xs mb-1 font-medium">Cursor</div>
-                  <div className="whitespace-pre-wrap leading-relaxed">{message.content}</div>
+                  <Markdown content={message.content} className="leading-relaxed" />
                 </div>
               </div>
             )}
