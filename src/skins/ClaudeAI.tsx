@@ -8,15 +8,6 @@ interface Props {
   selectedModel: string;
 }
 
-// Claude's sparkle/starburst icon (small, inline version)
-function ClaudeSparkle({ className, color }: { className?: string; color?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill={color || 'currentColor'}>
-      <path d="M12 2L13.09 8.26L18.18 6.03L14.97 11.18L21.18 12.32L14.97 13.45L18.18 18.6L13.09 16.37L12 22.63L10.91 16.37L5.82 18.6L9.03 13.45L2.82 12.32L9.03 11.18L5.82 6.03L10.91 8.26L12 2Z" />
-    </svg>
-  );
-}
-
 // Sidebar icon
 function SidebarIcon({ className }: { className?: string }) {
   return (
@@ -28,22 +19,23 @@ function SidebarIcon({ className }: { className?: string }) {
 }
 
 export function ClaudeAISkin({ messages, darkMode, selectedModel }: Props) {
-  // Colors based on real Claude.ai
   const bg = darkMode ? 'bg-[#2b2a27]' : 'bg-[#f5f4ef]';
   const text = darkMode ? 'text-[#e8e6e3]' : 'text-[#1a1915]';
   const userBubble = darkMode ? 'bg-[#403e3a]' : 'bg-[#e8e7e2]';
   const muted = darkMode ? 'text-[#8a8780]' : 'text-[#8a8780]';
   const border = darkMode ? 'border-[#3d3c38]' : 'border-[#e5e3d8]';
   const inputBg = darkMode ? 'bg-[#3d3c38]' : 'bg-white';
-  const scrollbar = darkMode ? 'dark-scrollbar' : 'light-scrollbar';
   const iconColor = darkMode ? 'text-[#8a8780]' : 'text-[#8a8780]';
   const hoverBg = darkMode ? 'hover:bg-[#3d3c38]' : 'hover:bg-[#e8e7e2]';
-  const claudeOrange = '#cc785c';
+
+  // Find the index of the last assistant message
+  const lastAssistantIndex = messages.reduce((last, msg, i) => 
+    msg.role === 'assistant' ? i : last, -1);
 
   return (
-    <div className={`${bg} ${text} min-h-[400px] rounded-lg overflow-auto ${scrollbar} font-sans`}>
+    <div className={`${bg} ${text} min-h-[500px] rounded-lg font-sans flex flex-col`}>
       {/* Header */}
-      <div className={`sticky top-0 ${bg} border-b ${border} px-4 py-3 flex items-center justify-between`}>
+      <div className={`${bg} border-b ${border} px-4 py-3 flex items-center justify-between flex-shrink-0`}>
         <div className="flex items-center gap-3">
           <button className={`p-1.5 rounded-md ${hoverBg} transition-colors`}>
             <SidebarIcon className={`w-5 h-5 ${iconColor}`} />
@@ -59,58 +51,56 @@ export function ClaudeAISkin({ messages, darkMode, selectedModel }: Props) {
         </button>
       </div>
 
-      {/* Messages */}
-      <div className="max-w-3xl mx-auto px-4 py-6 space-y-6">
-        {messages.map((message, index) => (
-          <div key={message.id}>
-            {message.role === 'user' ? (
-              /* User message - right aligned bubble, no avatar, no label */
-              <div className="flex justify-end">
-                <div className={`${userBubble} rounded-[20px] px-4 py-3 max-w-[85%]`}>
-                  <div className="whitespace-pre-wrap text-[15px] leading-relaxed">{message.content}</div>
-                </div>
-              </div>
-            ) : (
-              /* Assistant message - left aligned, no bubble, no avatar, no label */
-              <div className="space-y-2">
-                {/* Sparkle indicator between messages */}
-                {index > 0 && (
-                  <div className="flex items-center gap-2 mb-3">
-                    <ClaudeSparkle className="w-4 h-4" color={claudeOrange} />
+      {/* Messages - scrollable area */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="max-w-3xl mx-auto px-4 py-6 space-y-5">
+          {messages.map((message, index) => (
+            <div key={message.id}>
+              {message.role === 'user' ? (
+                <div className="flex justify-end">
+                  <div className={`${userBubble} rounded-[20px] px-4 py-3 max-w-[85%]`}>
+                    <div className="whitespace-pre-wrap text-[15px] leading-relaxed">{message.content}</div>
                   </div>
-                )}
-                {/* Message content - plain text, slightly bolder */}
-                <div className="text-[15px] leading-relaxed">
-                  <Markdown content={message.content} className="font-[450]" />
                 </div>
-                {/* Action icons below assistant message */}
-                <div className="flex items-center gap-1 pt-1">
-                  <button className={`p-1.5 rounded-md ${hoverBg} transition-colors`}>
-                    <Copy className={`w-4 h-4 ${iconColor}`} />
-                  </button>
-                  <button className={`p-1.5 rounded-md ${hoverBg} transition-colors`}>
-                    <ThumbsUp className={`w-4 h-4 ${iconColor}`} />
-                  </button>
-                  <button className={`p-1.5 rounded-md ${hoverBg} transition-colors`}>
-                    <ThumbsDown className={`w-4 h-4 ${iconColor}`} />
-                  </button>
-                  <button className={`p-1.5 rounded-md ${hoverBg} transition-colors`}>
-                    <RotateCcw className={`w-4 h-4 ${iconColor}`} />
-                  </button>
+              ) : (
+                <div className="space-y-2">
+                  <div className="text-[15px] leading-relaxed">
+                    <Markdown content={message.content} className="font-[450]" />
+                  </div>
+                  {/* Action icons + Claude icon on last assistant message */}
+                  <div className="flex items-center gap-1 pt-1">
+                    {index === lastAssistantIndex && (
+                      <img 
+                        src="/logos/claude.png" 
+                        alt="Claude" 
+                        className="w-5 h-5 rounded-full mr-1"
+                      />
+                    )}
+                    <button className={`p-1.5 rounded-md ${hoverBg} transition-colors`}>
+                      <Copy className={`w-4 h-4 ${iconColor}`} />
+                    </button>
+                    <button className={`p-1.5 rounded-md ${hoverBg} transition-colors`}>
+                      <ThumbsUp className={`w-4 h-4 ${iconColor}`} />
+                    </button>
+                    <button className={`p-1.5 rounded-md ${hoverBg} transition-colors`}>
+                      <ThumbsDown className={`w-4 h-4 ${iconColor}`} />
+                    </button>
+                    <button className={`p-1.5 rounded-md ${hoverBg} transition-colors`}>
+                      <RotateCcw className={`w-4 h-4 ${iconColor}`} />
+                    </button>
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-        ))}
+              )}
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Input area */}
-      <div className={`sticky bottom-0 ${bg} px-4 py-4`}>
+      <div className={`${bg} px-4 py-4 flex-shrink-0`}>
         <div className="max-w-3xl mx-auto">
           <div className={`${inputBg} rounded-2xl px-4 py-3 border ${border} shadow-sm`}>
-            <div className={`flex-1 text-[15px] ${muted} mb-2`}>
-              Reply...
-            </div>
+            <div className={`flex-1 text-[15px] ${muted} mb-2`}>Reply...</div>
             <div className="flex items-center justify-between">
               <button className={`p-1.5 rounded-md ${hoverBg} transition-colors`}>
                 <svg className={`w-5 h-5 ${iconColor}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

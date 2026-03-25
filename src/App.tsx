@@ -177,7 +177,7 @@ function App() {
               
               <div 
                 ref={previewRef}
-                className="rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-800 max-h-[70vh] lg:max-h-none overflow-y-auto"
+                className="rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-800"
               >
                 <SkinRenderer 
                   skinId={selectedSkin} 
