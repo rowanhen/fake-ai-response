@@ -32,6 +32,23 @@ export function ExportOptions({ previewRef }: Props) {
       // Clip to visible area
       x: 0,
       y: 0,
+      // Replace oklch colors that html2canvas can't parse
+      onclone: (doc) => {
+        const allElements = doc.querySelectorAll('*');
+        allElements.forEach((el) => {
+          const computed = window.getComputedStyle(el);
+          const htmlEl = el as HTMLElement;
+          if (computed.backgroundColor.includes('oklch')) {
+            htmlEl.style.backgroundColor = 'transparent';
+          }
+          if (computed.color.includes('oklch')) {
+            htmlEl.style.color = 'inherit';
+          }
+          if (computed.borderColor.includes('oklch')) {
+            htmlEl.style.borderColor = 'transparent';
+          }
+        });
+      }
     });
   }, [previewRef]);
 
@@ -44,6 +61,8 @@ export function ExportOptions({ previewRef }: Props) {
       link.download = `ai-response-${Date.now()}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
+    } catch (err) {
+      console.error('Export failed:', err);
     } finally {
       setExporting(false);
     }
@@ -69,6 +88,8 @@ export function ExportOptions({ previewRef }: Props) {
           link.click();
         }
       }, 'image/png');
+    } catch (err) {
+      console.error('Copy failed:', err);
     } finally {
       setExporting(false);
     }

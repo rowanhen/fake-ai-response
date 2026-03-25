@@ -22,45 +22,33 @@ export interface UserAvatar {
   color: string;
 }
 
-export const AVATAR_COLORS = [
-  '#5436DA', // Purple
-  '#19c37d', // Green
-  '#ef4444', // Red
-  '#f97316', // Orange
-  '#eab308', // Yellow
-  '#3b82f6', // Blue
-  '#8b5cf6', // Violet
-  '#ec4899', // Pink
-  '#14b8a6', // Teal
-];
-
 export const SKINS: Skin[] = [
   {
     id: 'claude-ai',
     name: 'Claude.ai',
     description: 'Anthropic web interface',
     supportsDarkMode: true,
-    models: ['Sonnet 4.6', 'Opus 4', 'Haiku 3.5'],
+    models: ['Sonnet 4.6', 'Opus 4', 'Sonnet 4', 'Sonnet 3.5', 'Haiku 3.5'],
   },
   {
     id: 'chatgpt',
     name: 'ChatGPT',
     description: 'OpenAI web interface',
     supportsDarkMode: true,
-    models: ['GPT-4o', 'GPT-4', 'o3'],
+    models: ['GPT-4o', 'GPT-4o mini', 'o3', 'o4-mini', 'GPT-4.5', 'GPT-4'],
   },
   {
     id: 'codex-cli',
     name: 'Codex CLI',
     description: 'OpenAI terminal interface',
     supportsDarkMode: false,
-    models: ['codex-mini', 'o4-mini', 'o3'],
+    models: ['codex-mini', 'o4-mini', 'o3', 'gpt-4.1'],
   },
   {
     id: 'claude-code',
     name: 'Claude Code',
     description: 'Terminal TUI with ❯ prompt',
     supportsDarkMode: false,
-    models: ['Sonnet 4.6', 'Opus 4'],
+    models: ['Sonnet 4.6', 'Opus 4', 'Sonnet 4', 'Haiku 3.5'],
   },
 ];

@@ -1,4 +1,4 @@
-import type { Message, SkinId, UserAvatar } from '../types';
+import type { Message, SkinId } from '../types';
 import { ClaudeCodeSkin } from './ClaudeCode';
 import { ChatGPTSkin } from './ChatGPT';
 import { ClaudeAISkin } from './ClaudeAI';
@@ -9,15 +9,14 @@ interface SkinRendererProps {
   messages: Message[];
   darkMode: boolean;
   selectedModel: string;
-  userAvatar: UserAvatar;
 }
 
-export function SkinRenderer({ skinId, messages, darkMode, selectedModel, userAvatar }: SkinRendererProps) {
+export function SkinRenderer({ skinId, messages, darkMode, selectedModel }: SkinRendererProps) {
   switch (skinId) {
     case 'claude-code':
       return <ClaudeCodeSkin messages={messages} selectedModel={selectedModel} />;
     case 'chatgpt':
-      return <ChatGPTSkin messages={messages} darkMode={darkMode} selectedModel={selectedModel} userAvatar={userAvatar} />;
+      return <ChatGPTSkin messages={messages} darkMode={darkMode} selectedModel={selectedModel} />;
     case 'claude-ai':
       return <ClaudeAISkin messages={messages} darkMode={darkMode} selectedModel={selectedModel} />;
     case 'codex-cli':

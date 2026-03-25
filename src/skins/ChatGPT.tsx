@@ -1,4 +1,4 @@
-import type { Message, UserAvatar } from '../types';
+import type { Message } from '../types';
 import { Markdown } from '../components/Markdown';
 import { ChevronDown, Copy, ThumbsUp, ThumbsDown, RotateCcw, MoreHorizontal, Share, Pencil, Menu } from 'lucide-react';
 
@@ -6,10 +6,9 @@ interface Props {
   messages: Message[];
   darkMode: boolean;
   selectedModel: string;
-  userAvatar: UserAvatar;
 }
 
-export function ChatGPTSkin({ messages, darkMode, selectedModel: _selectedModel, userAvatar: _userAvatar }: Props) {
+export function ChatGPTSkin({ messages, darkMode, selectedModel: _selectedModel }: Props) {
   // Colors based on real ChatGPT
   const bg = darkMode ? 'bg-[#212121]' : 'bg-white';
   const text = darkMode ? 'text-[#ececec]' : 'text-[#0d0d0d]';
@@ -22,7 +21,6 @@ export function ChatGPTSkin({ messages, darkMode, selectedModel: _selectedModel,
   
   // Suppress unused variable warnings (kept for API compatibility)
   void _selectedModel;
-  void _userAvatar;
 
   return (
     <div className={`${bg} ${text} min-h-[400px] rounded-lg overflow-auto ${scrollbar}`}>
