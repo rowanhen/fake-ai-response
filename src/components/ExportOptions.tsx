@@ -61,6 +61,14 @@ export function ExportOptions({ previewRef }: Props) {
         clonedElement.style.minWidth = `${rect.width}px`;
         clonedElement.style.maxWidth = `${rect.width}px`;
         clonedElement.style.overflow = 'visible';
+        // Remove sticky positioning — breaks html2canvas rendering
+        const stickyElements = clonedElement.querySelectorAll('*');
+        stickyElements.forEach(el => {
+          const computed = getComputedStyle(el);
+          if (computed.position === 'sticky') {
+            (el as HTMLElement).style.position = 'relative';
+          }
+        });
         sanitizeColors(clonedElement);
       }
     });
