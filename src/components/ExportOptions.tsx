@@ -6,6 +6,42 @@ interface Props {
   previewRef: React.RefObject<HTMLDivElement | null>;
 }
 
+// Replace all oklch/oklab/color-mix CSS color functions with fallback hex colors
+function sanitizeColors(element: HTMLElement) {
+  const unsupportedColorPattern = /oklch|oklab|color-mix|color\(/i;
+  
+  const allElements = element.querySelectorAll('*');
+  const elements = [element, ...Array.from(allElements)] as HTMLElement[];
+  
+  for (const el of elements) {
+    const style = getComputedStyle(el);
+    
+    // Check each color property
+    const colorProps = [
+      'backgroundColor', 'color', 'borderColor', 
+      'borderTopColor', 'borderRightColor', 'borderBottomColor', 'borderLeftColor',
+      'outlineColor', 'textDecorationColor', 'caretColor',
+      'boxShadow'
+    ] as const;
+    
+    for (const prop of colorProps) {
+      const value = style[prop as keyof CSSStyleDeclaration] as string;
+      if (value && typeof value === 'string' && unsupportedColorPattern.test(value)) {
+        if (prop === 'backgroundColor') {
+          el.style.backgroundColor = 'transparent';
+        } else if (prop === 'color') {
+          // Try to inherit, or fall back to a safe color
+          el.style.color = '#d4d4d4';
+        } else if (prop === 'boxShadow') {
+          el.style.boxShadow = 'none';
+        } else {
+          (el.style as unknown as Record<string, string>)[prop] = 'transparent';
+        }
+      }
+    }
+  }
+}
+
 export function ExportOptions({ previewRef }: Props) {
   const [copied, setCopied] = useState(false);
   const [exporting, setExporting] = useState(false);
@@ -15,39 +51,16 @@ export function ExportOptions({ previewRef }: Props) {
     
     const element = previewRef.current;
     
-    // Capture only the visible portion (viewport), not scrollable content
     return await html2canvas(element, {
       backgroundColor: null,
       scale: 2,
       logging: false,
       useCORS: true,
-      // Limit capture to visible viewport
-      height: Math.min(element.clientHeight, element.scrollHeight),
-      width: element.clientWidth,
-      windowHeight: element.clientHeight,
-      windowWidth: element.clientWidth,
-      // Don't scroll, capture what's visible
-      scrollX: 0,
-      scrollY: 0,
-      // Clip to visible area
-      x: 0,
-      y: 0,
-      // Replace oklch colors that html2canvas can't parse
-      onclone: (doc) => {
-        const allElements = doc.querySelectorAll('*');
-        allElements.forEach((el) => {
-          const computed = window.getComputedStyle(el);
-          const htmlEl = el as HTMLElement;
-          if (computed.backgroundColor.includes('oklch')) {
-            htmlEl.style.backgroundColor = 'transparent';
-          }
-          if (computed.color.includes('oklch')) {
-            htmlEl.style.color = 'inherit';
-          }
-          if (computed.borderColor.includes('oklch')) {
-            htmlEl.style.borderColor = 'transparent';
-          }
-        });
+      // Capture the full content, not clipped
+      scrollY: -window.scrollY,
+      onclone: (_doc, clonedElement) => {
+        // Sanitize all unsupported color functions in the cloned DOM
+        sanitizeColors(clonedElement);
       }
     });
   }, [previewRef]);
@@ -63,6 +76,7 @@ export function ExportOptions({ previewRef }: Props) {
       link.click();
     } catch (err) {
       console.error('Export failed:', err);
+      alert('Export failed — please try again');
     } finally {
       setExporting(false);
     }
@@ -82,6 +96,7 @@ export function ExportOptions({ previewRef }: Props) {
           setCopied(true);
           setTimeout(() => setCopied(false), 2000);
         } catch {
+          // Fallback to download
           const link = document.createElement('a');
           link.download = `ai-response-${Date.now()}.png`;
           link.href = canvas.toDataURL('image/png');
@@ -90,6 +105,7 @@ export function ExportOptions({ previewRef }: Props) {
       }, 'image/png');
     } catch (err) {
       console.error('Copy failed:', err);
+      alert('Copy failed — please try again');
     } finally {
       setExporting(false);
     }
