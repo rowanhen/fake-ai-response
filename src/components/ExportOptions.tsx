@@ -33,6 +33,45 @@ function sanitizeColors(element: HTMLElement) {
   }
 }
 
+// Convert SVG elements to inline <img> with data URIs so html2canvas renders them correctly
+function inlineSvgs(element: HTMLElement) {
+  const svgs = element.querySelectorAll('svg');
+  svgs.forEach(svg => {
+    const computed = getComputedStyle(svg);
+    const width = svg.getAttribute('width') || computed.width || '24';
+    const height = svg.getAttribute('height') || computed.height || '24';
+    
+    // Ensure the SVG has explicit dimensions and xmlns
+    const clone = svg.cloneNode(true) as SVGElement;
+    clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    if (!clone.getAttribute('width')) clone.setAttribute('width', String(width));
+    if (!clone.getAttribute('height')) clone.setAttribute('height', String(height));
+    
+    // Inherit color from parent for stroke/fill
+    const color = computed.color || '#888';
+    const allPaths = clone.querySelectorAll('path, line, rect, circle, polyline, polygon');
+    allPaths.forEach(el => {
+      if (el.getAttribute('stroke') === 'currentColor') el.setAttribute('stroke', color);
+      if (el.getAttribute('fill') === 'currentColor') el.setAttribute('fill', color);
+    });
+    if (clone.getAttribute('stroke') === 'currentColor') clone.setAttribute('stroke', color);
+    if (clone.getAttribute('fill') === 'currentColor') clone.setAttribute('fill', color);
+    
+    const svgString = new XMLSerializer().serializeToString(clone);
+    const dataUri = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgString)}`;
+    
+    const img = document.createElement('img');
+    img.src = dataUri;
+    img.style.width = typeof width === 'string' && width.endsWith('px') ? width : `${width}px`;
+    img.style.height = typeof height === 'string' && height.endsWith('px') ? height : `${height}px`;
+    img.style.display = 'inline-block';
+    img.style.verticalAlign = 'middle';
+    img.style.flexShrink = '0';
+    
+    svg.parentNode?.replaceChild(img, svg);
+  });
+}
+
 // Check if we're on mobile (for share vs download)
 function isMobile() {
   return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -70,6 +109,7 @@ export function ExportOptions({ previewRef }: Props) {
           }
         });
         sanitizeColors(clonedElement);
+        inlineSvgs(clonedElement);
       }
     });
   }, [previewRef]);
