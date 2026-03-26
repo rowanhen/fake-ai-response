@@ -19,39 +19,32 @@ const DEFAULT_MESSAGES: Message[] = [
   {
     id: '1',
     role: 'user',
-    content: 'Knock knock',
+    content: 'tell me a joke',
   },
   {
     id: '2',
     role: 'assistant',
-    content: `Who's there?`,
+    content: 'knock knock',
   },
   {
     id: '3',
     role: 'user',
-    content: 'Claude',
+    content: `who's there`,
   },
   {
     id: '4',
     role: 'assistant',
-    content: `Claude who?`,
+    content: 'claude',
   },
   {
     id: '5',
     role: 'user',
-    content: 'Claude you stop asking me to clarify my requirements',
+    content: 'claude who?',
   },
   {
     id: '6',
     role: 'assistant',
-    content: `I appreciate the joke, but I need to point out that "Claude you" doesn't phonetically map to any common English phrase, making this a **structurally invalid knock-knock joke**.
-
-Would you like me to:
-1. Generate a **properly formatted** knock-knock joke
-2. Explain the **linguistic constraints** of the knock-knock format
-3. Write a **12-page essay** on the history of door-based humor
-
-Also, I noticed you haven't specified your preferred joke complexity level. Could you rate your humor tolerance on a scale of 1-10?`,
+    content: 'claude you stop asking me to do ur job',
   },
 ];
 
